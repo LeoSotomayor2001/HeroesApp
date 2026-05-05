@@ -23,9 +23,7 @@ export const CustomBreadcrumbs = ({ currentPage, breadcrumbs = [] }: Props) => {
     <Breadcrumb className="my-5">
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink>
-            <Link to={"/"}>Inicio</Link>
-          </BreadcrumbLink>
+          <Link to={"/"}>Inicio</Link>
         </BreadcrumbItem>
 
         {breadcrumbs.map((crumb) => (
@@ -34,9 +32,8 @@ export const CustomBreadcrumbs = ({ currentPage, breadcrumbs = [] }: Props) => {
               <BreadcrumbSeparator>
                 <SlashIcon />
               </BreadcrumbSeparator>
-              <BreadcrumbLink>
-                <Link to={crumb.to}>{crumb.label}</Link>
-              </BreadcrumbLink>
+
+              <Link to={crumb.to}>{crumb.label}</Link>
             </BreadcrumbItem>
           </div>
         ))}

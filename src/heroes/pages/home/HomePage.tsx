@@ -5,11 +5,19 @@ import { HeroGrid } from "../hero/components/HeroGrid";
 import { useState } from "react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
+import { useQuery } from "@tanstack/react-query";
+import { getHeroByPageAction } from "@/heroes/actions/get-hero-by-page.action";
 
 export const HomePage = () => {
   const [activeTab, setActiveTab] = useState<
     "all" | "favorites" | "heroes" | "villains"
   >("all");
+
+  const { data: heroesResponse } = useQuery({
+    queryKey: ["heroes"],
+    queryFn: () => getHeroByPageAction(),
+    staleTime: 1000 * 60 * 5,
+  });
   return (
     <>
       <>
@@ -19,7 +27,7 @@ export const HomePage = () => {
           description="Descubre, explora y administrar SuperHeroes y Villanos"
         />
 
-        <CustomBreadcrumbs currentPage="Super Heroes"/>
+        <CustomBreadcrumbs currentPage="Super Heroes" />
 
         {/* Stats Dashboard */}
         <HeroStats />
@@ -49,26 +57,27 @@ export const HomePage = () => {
           </TabsList>
           <TabsContent value="all">
             {/* Mostrar todos los personajes */}
-             <HeroGrid />
+            <HeroGrid heroes={heroesResponse?.heroes ?? []} />
           </TabsContent>
           <TabsContent value="favorites">
             {/* Mostrar todos los personajes fav*/}
             <h1>Favoritos</h1>
+            <HeroGrid heroes={[]} />
           </TabsContent>
           <TabsContent value="heroes">
             {/* Mostrar todos los personajes heroes*/}
             <h1>heroes</h1>
+            <HeroGrid heroes={[]} />
           </TabsContent>
           <TabsContent value="villains">
             {/* Mostrar todos los personajes villanos*/}
             <h1>villanos</h1>
+            <HeroGrid heroes={[]} />
           </TabsContent>
         </Tabs>
 
-       
-
         {/* Pagination */}
-        <CustomPagination totalPages={8}/>
+        <CustomPagination totalPages={8} />
       </>
     </>
   );
