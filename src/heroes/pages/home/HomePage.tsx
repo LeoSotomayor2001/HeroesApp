@@ -6,9 +6,10 @@ import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
 
 import { useSearchParams } from "react-router";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { useHeroSummary } from "@/heroes/hooks/useHeroSummary";
 import { usePaginatedHero } from "@/heroes/hooks/usePaginatedHero";
+import { FavoriteHeroContext } from "@/heroes/context/FavoriteHeroContext";
 
 export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +24,9 @@ export const HomePage = () => {
     return validTabs.includes(activeTab) ? activeTab : "all";
   }, [activeTab]);
 
-
-  const {data:summary}= useHeroSummary()
-  const {data:heroesResponse}= usePaginatedHero({ page, limit,category })
+  const { favoriteCount,favorites } = use(FavoriteHeroContext);
+  const { data: summary } = useHeroSummary();
+  const { data: heroesResponse } = usePaginatedHero({ page, limit, category });
   return (
     <>
       <>
@@ -66,7 +67,7 @@ export const HomePage = () => {
                 })
               }
             >
-              Favorites (3)
+              Favorites ({favoriteCount})
             </TabsTrigger>
             <TabsTrigger
               value="heroes"
@@ -101,8 +102,7 @@ export const HomePage = () => {
           </TabsContent>
           <TabsContent value="favorites">
             {/* Mostrar todos los personajes fav*/}
-            <h1>Favoritos</h1>
-            {/* <HeroGrid heroes={heroesResponse?.heroes ?? []} /> */}
+            <HeroGrid heroes={favorites ?? []} />
           </TabsContent>
           <TabsContent value="heroes">
             {/* Mostrar todos los personajes heroes*/}
@@ -117,7 +117,12 @@ export const HomePage = () => {
         </Tabs>
 
         {/* Pagination */}
-        <CustomPagination totalPages={heroesResponse?.pages ?? 0} />
+        {
+          selectedTab !== 'favorites' && (
+            <CustomPagination totalPages={heroesResponse?.pages ?? 0} />
+
+          )
+        }
       </>
     </>
   );
